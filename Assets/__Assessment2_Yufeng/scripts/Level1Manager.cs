@@ -1,63 +1,90 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class Level1Manager : MonoBehaviour
 {
-   
-    public CarrotCounter carrotCounter; 
+    public CarrotCounter carrotCounter;
     public TextMeshProUGUI countDisplayText;
     public GameObject nextButton;
     public GameObject player;
     public Transform level2SpawnPoint;
     public int targetCarrotCount = 3;
+    public AudioClip correctSound;  
+    public AudioClip wrongSound;     
+    public GameObject correctImage;  
+    public GameObject wrongImage;   
+
     void Start()
     {
-        if (nextButton != null)
-        {
-            nextButton.SetActive(false);
-        }
+        nextButton.SetActive(true);  
         UpdateCountDisplay(0);
+       
+        correctImage.SetActive(false);
+        wrongImage.SetActive(false);
     }
+
     void Update()
     {
-        if (carrotCounter == null)
+        if (carrotCounter != null)
         {
-            Debug.LogWarning("Level1Manager: CarrotCounter is not assigned!");
-            return;
-        }
-        UpdateCountDisplay(carrotCounter.currentCount);
-
-        
-        if (carrotCounter.currentCount == targetCarrotCount && nextButton != null && !nextButton.activeSelf)
-        {
-           
-            nextButton.SetActive(true);
+            UpdateCountDisplay(carrotCounter.currentCount);
         }
     }
+
     void UpdateCountDisplay(int count)
     {
-        if (countDisplayText != null)
-        {
-            
-            countDisplayText.text = "Carrot Number: " + count;
-        }
+        countDisplayText.text = "Carrot Number: " + count;
     }
+
+    
     public void OnNextButtonClicked()
     {
-        Debug.Log("Next button clicked! Initiating transition to Level 2...");
-
-        if (player == null || level2SpawnPoint == null)
+        if (carrotCounter.currentCount == targetCarrotCount)
         {
-            Debug.LogError("Level1Manager: Player or Level2SpawnPoint is not assigned! Teleport failed.");
-            return;
+           
+            StartCoroutine(CorrectAnswerSequence());
         }
+        else
+        {
+            
+            StartCoroutine(WrongAnswerSequence());
+        }
+    }
+
+    IEnumerator CorrectAnswerSequence()
+    {
+        
+        if (correctSound != null)
+        {
+            AudioSource.PlayClipAtPoint(correctSound, transform.position);
+        }
+        
+        correctImage.SetActive(true);
+        
+        yield return new WaitForSeconds(5f);
+       
         TeleportToLevel2();
     }
+
+    
+    IEnumerator WrongAnswerSequence()
+    {
+        
+        if (wrongSound != null)
+        {
+            AudioSource.PlayClipAtPoint(wrongSound, transform.position);
+        }
+       
+        wrongImage.SetActive(true);
+        
+        yield return new WaitForSeconds(2f);
+        wrongImage.SetActive(false);
+    }
+
     void TeleportToLevel2()
     {
         player.transform.position = level2SpawnPoint.position;
         player.transform.rotation = level2SpawnPoint.rotation;
-
-        Debug.Log("Teleport successful! Welcome to Level 2.");
     }
 }

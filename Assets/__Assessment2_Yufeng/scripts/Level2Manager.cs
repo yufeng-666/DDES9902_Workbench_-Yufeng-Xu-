@@ -1,39 +1,41 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class Level2Manager : MonoBehaviour
-{ 
+{
+    
     public CarrotCounter carrotCounter;
     public TextMeshProUGUI countDisplayText;
     public GameObject nextButton;
-    public GameObject player;   
+    public GameObject player;
     public Transform level3SpawnPoint;
-    public int targetCarrotCount = 5;
+    public int targetCarrotCount = 5; 
+    
+    public AudioClip correctSound;  
+    public AudioClip wrongSound;    
+    public GameObject correctImage;  
+    public GameObject wrongImage;    
+
     void Start()
     {
-        if (nextButton != null)
-        {
-            nextButton.SetActive(false);
-        }
+       
+        nextButton.SetActive(true);
+       
         UpdateCountDisplay(0);
+       
+        if (correctImage != null) correctImage.SetActive(false);
+        if (wrongImage != null) wrongImage.SetActive(false);
     }
 
     void Update()
     {
-        if (carrotCounter == null)
+       
+        if (carrotCounter != null)
         {
-            Debug.LogWarning("Level2Manager: CarrotCounter is not assigned!");
-            return;
+            UpdateCountDisplay(carrotCounter.currentCount);
         }
-
-        UpdateCountDisplay(carrotCounter.currentCount);
-
-        if (carrotCounter.currentCount == targetCarrotCount && nextButton != null && !nextButton.activeSelf)
-        {
-            nextButton.SetActive(true);
-        }
-    }
-
+    }    
     void UpdateCountDisplay(int count)
     {
         if (countDisplayText != null)
@@ -41,23 +43,77 @@ public class Level2Manager : MonoBehaviour
             countDisplayText.text = "Carrot Number: " + count;
         }
     }
+
     public void OnNextButtonClicked()
     {
-        Debug.Log("Next button clicked! Initiating transition to Level 3...");
+       
+        if (correctImage != null) correctImage.SetActive(false);
+        if (wrongImage != null) wrongImage.SetActive(false);
 
-        if (player == null || level3SpawnPoint == null)
+        
+        if (carrotCounter.currentCount == targetCarrotCount)
         {
-            Debug.LogError("Level2Manager: Player or Level3SpawnPoint is not assigned! Teleport failed.");
-            return;
+            
+            StartCoroutine(CorrectAnswerSequence());
         }
-
+        else
+        {
+            
+            StartCoroutine(WrongAnswerSequence());
+        }
+    }
+   
+    IEnumerator CorrectAnswerSequence()
+    {
+       
+        if (correctSound != null)
+        {
+            AudioSource.PlayClipAtPoint(correctSound, transform.position);
+        }
+        
+        if (correctImage != null)
+        {
+            correctImage.SetActive(true);
+        }
+       
+        yield return new WaitForSeconds(5f);
+      
         TeleportToLevel3();
     }
+
+   
+    IEnumerator WrongAnswerSequence()
+    {
+       
+        if (wrongSound != null)
+        {
+            AudioSource.PlayClipAtPoint(wrongSound, transform.position);
+        }
+      
+        if (wrongImage != null)
+        {
+            wrongImage.SetActive(true);
+        }
+       
+        yield return new WaitForSeconds(2f);
+        if (wrongImage != null)
+        {
+            wrongImage.SetActive(false);
+        }
+    }
+
+    
     void TeleportToLevel3()
     {
-        player.transform.position = level3SpawnPoint.position;
-        player.transform.rotation = level3SpawnPoint.rotation;
-
-        Debug.Log("Teleport successful! Welcome to Level 3.");
+        if (player != null && level3SpawnPoint != null)
+        {
+            player.transform.position = level3SpawnPoint.position;
+            player.transform.rotation = level3SpawnPoint.rotation;
+            Debug.Log("Teleport successful! Welcome to Level 3.");
+        }
+        else
+        {
+            Debug.LogError("Level2Manager: Player or Level3SpawnPoint is not assigned! Teleport failed.");
+        }
     }
 }
