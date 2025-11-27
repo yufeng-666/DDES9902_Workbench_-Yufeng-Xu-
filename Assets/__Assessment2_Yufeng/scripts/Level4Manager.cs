@@ -17,6 +17,7 @@ public class Level4Manager : MonoBehaviour
     public GameObject wrongImage;        
     public GameObject gameCompleteImage;
     public GameObject player;
+    public ParticleSystem winParticles;
 
     void Start()
     {
@@ -74,6 +75,11 @@ public class Level4Manager : MonoBehaviour
 
        
         correctImage.SetActive(true);
+        if (winParticles != null)
+        {
+            winParticles.transform.position = correctImage.transform.position; 
+            winParticles.Play(); 
+        }
         yield return new WaitForSeconds(2f); 
         correctImage.SetActive(false);
 

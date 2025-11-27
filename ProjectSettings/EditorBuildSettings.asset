@@ -24,11 +24,14 @@ EditorBuildSettings:
     path: Assets/__Assessment1_Assets/Scenes/29 Feedable Doggo.unity
     guid: a6f9d7926f276ca44912ae363ce710f6
   - enabled: 0
-    path: "Assets/__Assessment2_Yufeng/2.0 Yufeng\u2018s Assessment2.unity"
+    path: "Assets/__Assessment2_Yufeng/1.0 Yufeng\u2018s Assessment2.unity"
     guid: 6a2c22b9a76a3f34e9807dfb45585227
+  - enabled: 0
+    path: Assets/__Assessment2_Yufeng/2.0 Yufeng's Assessment2.unity
+    guid: 230c3dba75b02df4fa4a2fcca44939b6
   - enabled: 1
     path: Assets/__Assessment2_Yufeng/3.0 Yufeng's Assessment2.unity
-    guid: 230c3dba75b02df4fa4a2fcca44939b6
+    guid: 454914db1914a984eb5544500befa178
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7, type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 3c28928f4ba463b408fa3dad31f078ec, type: 2}
